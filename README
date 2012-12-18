@@ -1,1 +1,3 @@
-Site stater repo
+CouchApp + KnockoutJS front-end app and Erlang server for collecting statistics of availability of web-sites.
+
+Dynamic graphics, nice UI included.
