@@ -1,0 +1,22 @@
+{application, site_stater,
+ [
+  {description, "App gets statistics from sites"},
+  {vsn, "0.2.0"},
+  {modules, 
+  	   [site_stater_app,
+		site_stater_sup,
+		site_stater,
+		st_db,
+		st_site_checker,
+		st_utils,
+		st_web_control_resource_server,
+		st_web_control_resource_sites,
+		st_web_control_resource_users]},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { site_stater_app, []}},
+  {env, []}
+ ]}.

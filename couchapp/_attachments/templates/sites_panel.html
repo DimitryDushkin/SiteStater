@@ -1,0 +1,65 @@
+<!-- Site add, edit list menu -->
+<div id="content_sites_control_menu" class="grid_12">
+	<div class="grid_3">
+		<a href="#" id="add_site" 
+					data-bind="click: showAddSiteForm"><b>+</b> Добавить сайт</a>
+	</div>
+	<div class="alpha grid_3">
+		<a href="#" id="edit_sites_list" 
+					data-bind="click: showRemoveSitesForm">Изменить список сайтов</a>
+	</div>
+	<div class="clear"></div>
+
+	<form id="add_site_form" data-bind="submit: addSite" style="display: none">
+		<input type="text" name="site" size="20" data-bind="value: siteToAddUrl" /> 
+		<input type="submit" value="Добавить" style="margin-left: 10px" />
+	</form>
+	<div id="remove_sites_form" class="prefix_3" style="display: none">
+		<a href="#" id="remove_sites"
+		   data-bind="click: removeSites">Убрать сайты</a> 
+		<input type="button" id="cancel_remove_sites" 
+			   data-bind="click: cancelRemoveSites" value="Отмена" />
+	</div>
+</div>
+<!-- end of menu -->
+<div id="content_sites_list" 
+	 class="grid_12" 
+	 data-bind="template: {name: 'sites_list_template',
+	 					   foreach: sites,
+	 					   beforeRemove: animationOnRemoveSite,
+                           afterAdd: animationOnAddSite}"></div>
+<div id="chartContainer" width="100%" height="100"></div>
+
+  <!-- Templates -->
+  
+  <script id="sites_list_template" type="text/x-jquery-tmpl">
+	<div class="site">
+		<div class="site_panel grid_12">
+			<div class="site_info">
+				&ndash;
+				<input type="checkbox" value="${url}" 
+					   class="delete_checkbox" data-bind="checked: toDelete" /> 
+				<a href="${url}" class="show_site_stat" data-bind="click: showSiteStat">${url.substr(7)}</a>
+				{{if status == "200"}}
+					<img src="img/green_light.png" alt="ok"/>
+				{{else status == ""}}
+					<img src="img/yellow_light.png" alt="No stats yet" title="No stats yet"/>
+				{{else}}
+					<img src="img/red_light.png" alt="error"/> 
+					<span class="problem_reason">(${status || 'Пока не проверялся'})</span>
+				{{/if}}				
+			</div>
+			<div class="site_stat">
+				<div class="site_last_check">Последняя проверка: ${dateTimestamp}</div>
+				<div class="stat_range">
+					Показать статистику за :
+					<a href="#" data-range="1" class="stat_range_selected">день</a>,&nbsp;&nbsp;
+					<a href="#" data-range="3">3 дня</a>,&nbsp;&nbsp;
+					<a href="#" data-range="7">неделю</a>,&nbsp;&nbsp;
+					<a href="#" data-range="30">месяц</a>,&nbsp;&nbsp;
+					<a href="#" data-range="365">год</a>.
+				</div>
+			</div>
+		</div>
+	</div>
+  </script>

@@ -1,0 +1,6 @@
+{
+	"env":
+		 {
+		 	"default": {"db":"http://admin:123@127.0.0.1:5984/site_stater"} 
+		 }
+}

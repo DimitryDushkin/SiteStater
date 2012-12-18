@@ -1,0 +1,112 @@
+<script type="text/javascript">
+$(function(){
+	//focus on login textinput
+	$('#login_form input[name="email"]').focus();
+	
+	/**
+	 * Login to CouchDb to _users table
+	 * Returns session cookies
+	 */
+	function doLogin(name, password){
+		$.couch.login({
+			'name': name,
+			'password': password,
+			success: function() {
+	            $('.reveal-modal').trigger('reveal:close');
+	            viewModel.userEmail(name);
+			},
+			error: function(status, error, reason) {
+				$inputs.removeAttr("disabled");
+				alert( "Error: " + error + ", " + reason );
+			}
+		});
+	}
+	
+// https://gist.github.com/963585 snippet usefull one
+// ============= Switchers of panels ===================================
+	$('#register_suggest').click(function(){
+		$(this).parent().fadeOut();
+		$('#login_suggest').parent().fadeIn()
+		
+		$('#login_form').slideUp();
+		$('#register_form').slideDown()
+						   .find('input[name="email"]').focus();	
+		
+		return false;
+	});
+	
+	$('#login_suggest').click(function(){
+		$(this).parent().fadeOut();
+		$('#register_suggest').parent().fadeIn();
+		
+		$('#login_form').slideDown()
+						.find('input[name="email"]').focus();;
+		$('#register_form').slideUp();	
+		
+		return false;
+	});
+	
+// ========== Login and register buttons handlers =======================
+	$('#register_form').submit(function(event){
+		// prevent default posting of form
+	    event.preventDefault();
+		
+		// let's disable the inputs for the duration of the ajax request
+	   	$inputs = $(this).find("input");
+		$inputs.attr("disabled", "disabled");
+		
+		var email = $(this).find('input[name="email"]').val();
+		var password = $(this).find('input[name="password"]').val();
+		
+		$.couch.signup({name: email}, password, {
+			success: function() {
+				doLogin(email, password);
+				$db.saveDoc({_id: email, type: 'user'})
+			},
+			error: function(status, error, reason) {
+				$inputs.removeAttr("disabled");
+				alert( "Error: " + error + ", " + reason );
+			}
+		});
+	});
+	
+	$('#login_form').submit(function(event){
+		// prevent default posting of form
+	    event.preventDefault();
+		
+		// let's disable the inputs for the duration of the ajax request
+	   	$inputs = $(this).find("input");
+		$inputs.attr("disabled", "disabled");
+		
+		var email = $(this).find('input[name="email"]').val();
+		var password = $(this).find('input[name="password"]').val();
+		
+		doLogin(email, password);
+	});
+	
+});
+</script>
+<form id="login_form">
+	<h2>Вход в приложение</h2>
+	<label for="email">Имя пользователя (e-mail):</label>
+	<input type="text" name="email" /> <br />
+	<label for="password">Пароль:</label>
+	<input type="password" name="password" /> <br />
+	<input type="submit" value="Войти" />
+</form>	
+<p>
+	Нет аккаунта? 
+	<a id="register_suggest" href="#" style="color:#349205">Зарегистрируйтесь</a>.
+</p>
+<p style="display: none">
+	Есть аккаунт? 
+	<a href="#" id="login_suggest" style="color:#349205">Входите.</a>
+</p>
+<form id="register_form" style="display:none">
+	<h2>Регистрация</h2>
+	<label for="email">Адрес электронной почты:</label>
+	<input type="text" name="email" /> <br />
+	<label for="password">Пароль:</label>
+	<input type="password" name="password" /> <br />
+	<input type="submit" value="Зарегистрироваться" />
+</form>
